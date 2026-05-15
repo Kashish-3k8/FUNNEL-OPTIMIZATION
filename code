@@ -1,0 +1,78 @@
+CREATE DATABASE FUNNEL;
+
+USE FUNNEL;
+
+CREATE TABLE user_funnel (
+    session_id VARCHAR(10),
+    device_type VARCHAR(10),
+    traffic_source VARCHAR(20),
+    visited INT,
+    product_view INT,
+    add_to_cart INT,
+    purchase INT
+);
+
+INSERT INTO user_funnel VALUES
+('S1','Mobile','Instagram',1,1,0,0),
+('S2','Desktop','Google',1,0,0,0),
+('S3','Mobile','Facebook',1,0,0,0),
+('S4','Desktop','Google',1,0,0,0),
+('S5','Mobile','Instagram',1,0,0,0),
+('S6','Desktop','Direct',1,0,0,0),
+('S7','Mobile','Google',1,0,0,0),
+('S8','Desktop','Facebook',1,0,0,0),
+('S9','Mobile','Instagram',1,1,0,0),
+('S10','Desktop','Google',1,1,0,0),
+
+('S11','Mobile','Google',1,0,0,0),
+('S12','Desktop','Google',1,1,0,0),
+('S13','Mobile','Instagram',1,1,1,0),
+('S14','Desktop','Google',1,0,0,0),
+('S15','Mobile','Facebook',1,0,0,0),
+('S16','Desktop','Google',1,0,0,0),
+('S17','Mobile','Instagram',1,0,0,0),
+('S18','Desktop','Direct',1,1,1,1),
+('S19','Mobile','Google',1,0,0,0),
+('S20','Desktop','Facebook',1,0,0,0);
+
+SELECT session_id ,device_type, traffic_source, visited, product_view, add_to_cart, purchase 
+FROM user_funnel;
+
+##funnelquery 
+
+SELECT
+    COUNT(*) AS total_visits,
+
+    SUM(product_view) AS product_views,
+
+    ROUND(
+        SUM(product_view)*100.0/COUNT(*),2
+    ) AS visit_to_product_pct,
+
+    SUM(add_to_cart) AS carts,
+
+    ROUND(
+        SUM(add_to_cart)*100.0/COUNT(*),2
+    ) AS cart_pct,
+
+    SUM(purchase) AS purchases,
+
+    ROUND(
+        SUM(purchase)*100.0/COUNT(*),2
+    ) AS purchase_pct
+
+FROM user_funnel;
+
+SELECT
+    traffic_source,
+
+    COUNT(*) AS visits,
+
+    SUM(purchase) AS purchases,
+
+    ROUND(SUM(purchase)*100.0/COUNT(*),2)
+    AS conversion_rate
+
+FROM user_funnel
+GROUP BY traffic_source
+ORDER BY conversion_rate DESC;
