@@ -77,7 +77,7 @@ The dataset contains simulated e-commerce session-level data with the following 
 ---
 
 # SQL Queries Used
-
+'''
 ## 1. Funnel Conversion Analysis
 
 ```sql
