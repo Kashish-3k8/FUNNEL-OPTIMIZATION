@@ -1,60 +1,210 @@
-# FUNNEL-OPTIMIZATION
+# E-Commerce Funnel Optimization Analysis
 
-Project Overview
-This project analyzes the effectiveness of an e-commerce sales funnel by examining the user journey from the first website visit to a completed purchase.
+## Overview
+This project focuses on analyzing the customer conversion funnel of an e-commerce platform to identify major leakage points and improve overall conversion efficiency. The analysis tracks user movement across different stages of the customer journey:
 
-The goal of the analysis is to identify where users drop off in the funnel and provide data-driven recommendations to improve conversion rates and overall business performance. The project combines SQL data analysis and Tableau visualization to transform raw user activity data into actionable business insights.
+Visit → Product View → Add to Cart → Purchase
 
-Business Context
-E-commerce companies typically receive large volumes of website traffic, but not all visitors convert into paying customers.
+The objective of the project was to identify where users were dropping off, diagnose possible causes behind low conversion rates, and suggest data-driven optimization strategies.
 
-Understanding where users leave the sales funnel is critical for improving:
+---
 
-conversion rates; - marketing efficiency;
-customer experience;
-revenue performance.
-This project simulates a real-world analytical task where a data analyst is asked to evaluate the performance of the sales funnel and identify potential optimization opportunities.
+# Problem Statement
 
-Business Problem
-An e-commerce company observed stable website traffic but slower revenue growth. Management suspected inefficiencies within the sales funnel but lacked clear visibility into where users were dropping off.
+Although the platform was receiving significant user traffic, the final purchase conversion rate remained very low. The business wanted to understand:
 
-The objective of this analysis was to:
+- At which stage maximum users were dropping off
+- Which traffic sources were underperforming
+- Whether device type affected conversion behavior
+- How funnel leakage could be reduced to improve revenue
 
-Measure conversion rates between funnel stages;
-Identify bottlenecks in the user journey;
-Understand how users progress through the funnel;
-Provide recommendations to improve conversions.
-Project Objectives
-The main objectives of this analysis were:
+---
 
-Analyze user progression through the sales funnel;
-Calculate conversion rates between funnel stages;
-Identify bottlenecks in the user journey;
-Visualize funnel performance;
-Provide business recommendations to improve conversions.
-Sales Funnel Stages
-The analysis focuses on the following stages:
+# Objectives
 
-Visit;
-Product View;
-Add to Cart;
-Purchase.
-Tracking these stages helps evaluate user behavior and identify opportunities to optimize the customer journey.
+- Perform end-to-end funnel analysis using SQL
+- Calculate stage-wise conversion rates
+- Identify key leakage points in the customer journey
+- Analyze conversion behavior across device types and traffic sources
+- Recommend business strategies to improve conversions
 
-Data Source
-The dataset contains user interaction events from an e-commerce website, including:
+---
 
-website visits;
-product page views;
-cart actions;
-purchases.
-Each event represents a step in the user journey through the sales funnel.
+# Tools & Technologies
 
-Due to size limitations, the full dataset is not included in the repository. A sample dataset is provided for demonstration purposes.
+- SQL
+- MySQL Workbench
+- Data Cleaning & Aggregation
+- Funnel Analysis
+- KPI Analysis
 
-Dataset file: data/general_request_sample.csv
+---
 
-Tools & Technologies
-The following tools were used in this project:
+# Dataset
 
-SQL (BigQuery) – data extraction and funnel calculations;
+The dataset contains simulated e-commerce session-level data with the following attributes:
+
+| Column Name | Description |
+|---|---|
+| session_id | Unique session identifier |
+| device_type | Mobile/Desktop |
+| traffic_source | Google, Instagram, Facebook, Direct |
+| visited | Whether user visited |
+| product_view | Whether product page viewed |
+| add_to_cart | Whether product added to cart |
+| purchase | Whether purchase completed |
+
+---
+
+# Funnel Stages
+
+1. Visit
+2. Product View
+3. Add to Cart
+4. Purchase
+
+---
+
+# Key Metrics Calculated
+
+- Visit to Product View Conversion
+- Product View to Cart Conversion
+- Cart to Purchase Conversion
+- Overall Purchase Conversion
+- Device-wise Conversion
+- Traffic Source-wise Conversion
+
+---
+
+# SQL Queries Used
+
+## 1. Funnel Conversion Analysis
+
+```sql
+SELECT
+    COUNT(*) AS total_visits,
+
+    SUM(product_view) AS product_views,
+
+    ROUND(
+        SUM(product_view)*100.0/COUNT(*),2
+    ) AS visit_to_product_pct,
+
+    SUM(add_to_cart) AS carts,
+
+    ROUND(
+        SUM(add_to_cart)*100.0/COUNT(*),2
+    ) AS cart_pct,
+
+    SUM(purchase) AS purchases,
+
+    ROUND(
+        SUM(purchase)*100.0/COUNT(*),2
+    ) AS purchase_pct
+
+FROM user_funnel;
+
+## 2. Device-wise Leakage Analysis
+
+```sql
+SELECT
+    device_type,
+
+    COUNT(*) AS visits,
+
+    SUM(add_to_cart) AS carts,
+
+    SUM(purchase) AS purchases,
+
+    ROUND(
+        SUM(purchase)*100.0/
+        NULLIF(SUM(add_to_cart),0),2
+    ) AS cart_to_purchase_pct
+
+FROM user_funnel
+GROUP BY device_type;
+
+## 3. Traffic Source Analysis
+
+```sql
+SELECT
+    traffic_source,
+
+    COUNT(*) AS visits,
+
+    SUM(purchase) AS purchases,
+
+    ROUND(
+        SUM(purchase)*100.0/COUNT(*),2
+    ) AS conversion_rate
+
+FROM user_funnel
+GROUP BY traffic_source
+ORDER BY conversion_rate DESC;
+```
+
+---
+
+# Key Findings
+
+- Significant user drop-offs were observed across the funnel stages
+- Conversion rates dropped to:
+  - 21.21% at Product View stage
+  - 4.20% at Add to Cart stage
+  - 1.34% at Purchase stage
+- Mobile users showed higher checkout abandonment
+- Social traffic sources had lower conversion quality compared to direct and Google traffic
+
+---
+
+# Business Recommendations
+
+Based on the analysis, the following recommendations were proposed:
+
+- Simplify mobile checkout process
+- Improve landing page relevance
+- Retarget abandoned users
+- Optimize campaign targeting
+- Improve checkout user experience and payment flow
+
+---
+
+# Business Impact
+
+The analysis helped identify critical leakage points affecting customer conversion and revenue generation. The insights can support:
+
+- Better marketing ROI
+- Improved user experience
+- Higher conversion efficiency
+- Reduced revenue leakage
+
+---
+
+# Learning Outcomes
+
+Through this project, I gained hands-on experience in:
+
+- SQL-based funnel analysis
+- Conversion rate calculation
+- KPI analysis
+- Business problem-solving
+- Customer behavior analysis
+- Analytical storytelling
+
+---
+
+# Future Improvements
+
+- Build interactive Power BI dashboards
+- Add cohort analysis
+- Perform A/B testing analysis
+- Integrate real-time customer behavior tracking
+- Apply predictive analytics for conversion forecasting
+
+---
+
+# Author
+
+Kashish Kumari  
+B.Tech Chemical Engineering, BIT Mesra  
+Aspiring Data Analyst | Consulting & Analytics Enthusiast
